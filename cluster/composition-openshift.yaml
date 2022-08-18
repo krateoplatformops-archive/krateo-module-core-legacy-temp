@@ -7,7 +7,7 @@ metadata:
     platform: openshift
 spec:
   #  writeConnectionSecretsToNamespace: crossplane-system
-  writeConnectionSecretsToNamespace: krateo-system
+  writeConnectionSecretsToNamespace: krateo-v1
   compositeTypeRef:
     #    apiVersion: gcp-stack-template-plus.projectkerberus.io/v1alpha1
     apiVersion: modules.krateo.io/v1alpha1
@@ -54,7 +54,7 @@ spec:
               apiVersion: argoproj.io/v1alpha1
               metadata:
                 # name: krateo-argocd
-                namespace: krateo-system
+                namespace: krateo-v1
               spec:
                 controller:
                   resources:
@@ -156,7 +156,7 @@ spec:
     #             namespace: openshift-operators
     #           spec:
     #             targetNamespaces:
-    #             - krateo-system
+    #             - krateo-v1
     #   patches:
     #     - fromFieldPath: metadata.name
     #       toFieldPath: spec.providerConfigRef.name
@@ -250,11 +250,11 @@ spec:
         metadata:
           name: provider-argocd-providerconfig
         spec:
-          serverUrl: https://krateo-module-core-argocd-server.krateo-system.svc:443
+          serverUrl: https://krateo-module-core-argocd-server.krateo-v1.svc:443
           credentials:
             source: Secret
             secretRef:
-              namespace: krateo-system
+              namespace: krateo-v1
               name: krateo-module-core-argocd-cluster
               key: admin.password
           debugClient: true
@@ -276,13 +276,13 @@ spec:
           transforms:
             - type: string
               string:
-                fmt: "https://%s-argocd-server.krateo-system.svc:443"
+                fmt: "https://%s-argocd-server.krateo-v1.svc:443"
     # - base:
     #     apiVersion: v1
     #     kind: ConfigMap
     #     metadata:
     #       name: argocd-cm
-    #       namespace: krateo-system
+    #       namespace: krateo-v1
     #       labels:
     #         app.kubernetes.io/name: argocd-cm
     #         app.kubernetes.io/part-of: argocd
@@ -301,7 +301,7 @@ spec:
               kind: ConfigMap
               metadata:
                 name: argocd-cm
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: argocd-cm
                   app.kubernetes.io/part-of: argocd
@@ -335,7 +335,7 @@ spec:
             writeTokenSecretToRef:
               name: krateo-dashboard-argocd-token
               key: authToken
-              namespace: krateo-system
+              namespace: krateo-v1
       patches:
         - fromFieldPath: metadata.name
           toFieldPath: spec.providerConfigRef.name
@@ -352,19 +352,19 @@ spec:
               name: krateo-dashboard
               repository: https://krateoplatformops.github.io/krateo-dashboard
               version: 0.3.113
-            namespace: krateo-system
+            namespace: krateo-v1
             set:
               - name: keptn.bridgeToken
                 valueFrom:
                   secretKeyRef:
                     name: bridge-credentials
-                    namespace: krateo-system
+                    namespace: krateo-v1
                     key: BASIC_AUTH_PASSWORD
               - name: keptn.apiToken
                 valueFrom:
                   secretKeyRef:
                     name: keptn-api-token
-                    namespace: krateo-system
+                    namespace: krateo-v1
                     key: keptn-api-token
             values:
               postgresql:
@@ -380,9 +380,9 @@ spec:
                 containerSecurityContext:
                   enabled: false
               keptn:
-                # bridge: http://api-gateway-nginx.krateo-system.svc/api/controlPlane/v1/
-                #api: https://api-service.krateo-system.svc:8080/api/v1
-                api: http://api-gateway-nginx.krateo-system.svc/api/
+                # bridge: http://api-gateway-nginx.krateo-v1.svc/api/controlPlane/v1/
+                #api: https://api-service.krateo-v1.svc:8080/api/v1
+                api: http://api-gateway-nginx.krateo-v1.svc/api/
 
       patches:
         - fromFieldPath: "spec.krateo-dashboard.version"
@@ -404,15 +404,15 @@ spec:
         #   transforms:
         #     - type: string
         #       string:
-        #         #                fmt: "https://%s-keptn-bridge-service.krateo-system.svc:443"
-        #         fmt: "https://bridge.krateo-system.svc:443/bridge/api"
+        #         #                fmt: "https://%s-keptn-bridge-service.krateo-v1.svc:443"
+        #         fmt: "https://bridge.krateo-v1.svc:443/bridge/api"
         # - fromFieldPath: metadata.name
         #   toFieldPath: spec.forProvider.values.keptn.api
         #   transforms:
         #     - type: string
         #       string:
-        #         #                fmt: "https://%s-keptn-api-service.krateo-system.svc:443"
-        #         fmt: "https://api-service.krateo-system.svc:443/api/v1"
+        #         #                fmt: "https://%s-keptn-api-service.krateo-v1.svc:443"
+        #         fmt: "https://api-service.krateo-v1.svc:443/api/v1"
         - fromFieldPath: "spec.organization"
           toFieldPath: "spec.forProvider.values.organization"
         - fromFieldPath: "spec.frontendUrl"
@@ -579,7 +579,7 @@ spec:
               kind: ServiceAccount
               metadata:
                 name: keptn-mongo
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: mongo
                   helm.sh/chart: mongo-10.26.4
@@ -611,12 +611,12 @@ spec:
               kind: ServiceAccount
               metadata:
                 name: keptn-default
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-default
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
       patches:
@@ -643,12 +643,12 @@ spec:
               kind: ServiceAccount
               metadata:
                 name: keptn-configuration-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-configuration-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
       patches:
@@ -675,12 +675,12 @@ spec:
               kind: ServiceAccount
               metadata:
                 name: keptn-shipyard-controller
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-shipyard-controller
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
       patches:
@@ -707,12 +707,12 @@ spec:
               kind: ServiceAccount
               metadata:
                 name: keptn-secret-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-secret-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
       patches:
@@ -739,12 +739,12 @@ spec:
               kind: ServiceAccount
               metadata:
                 name: keptn-lighthouse-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-lighthouse-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
       patches:
@@ -771,12 +771,12 @@ spec:
               kind: ServiceAccount
               metadata:
                 name: keptn-api-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-api-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
       patches:
@@ -803,12 +803,12 @@ spec:
               kind: ServiceAccount
               metadata:
                 name: keptn-webhook-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-api-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
       patches:
@@ -835,12 +835,12 @@ spec:
               kind: Secret
               metadata:
                 name: keptn-api-token
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-api-token
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               type: Opaque
@@ -870,12 +870,12 @@ spec:
               kind: Secret
               metadata:
                 name: bridge-credentials
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: bridge-credentials
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               type: Opaque
@@ -906,12 +906,12 @@ spec:
               kind: Secret
               metadata:
                 name: bridge-oauth
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: bridge-oauth
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               type: Opaque
@@ -942,12 +942,12 @@ spec:
               kind: Secret
               metadata:
                 name: bridge-oauth-mongodb-credentials
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: bridge-oauth-mongodb-credentials
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               type: Opaque
@@ -977,12 +977,12 @@ spec:
               kind: Secret
               metadata:
                 name: mongodb-credentials
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: mongodb-credentials
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               type: Opaque
@@ -1016,7 +1016,7 @@ spec:
               kind: ConfigMap
               metadata:
                 name: keptn-nats-cluster-config
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app: keptn-nats-cluster
                   chart: nats-0.7.5
@@ -1056,7 +1056,7 @@ spec:
               kind: ConfigMap
               metadata:
                 name: keptn-nats-cluster-config
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app: keptn-nats-cluster
                   chart: nats-0.7.5
@@ -1096,12 +1096,12 @@ spec:
               kind: ConfigMap
               metadata:
                 name: api-nginx-config
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: api-nginx-config-cm
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               data:
@@ -1475,12 +1475,12 @@ spec:
               kind: ConfigMap
               metadata:
                 name: secret-service-config
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: secret-service-config-cm
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               data:
@@ -1525,7 +1525,7 @@ spec:
               apiVersion: v1
               metadata:
                 name: keptn-mongo
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: mongo
                   helm.sh/chart: mongo-10.26.4
@@ -1563,12 +1563,12 @@ spec:
               kind: PersistentVolumeClaim
               metadata:
                 name: configuration-volume
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: configuration-volume
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               spec:
@@ -1601,12 +1601,12 @@ spec:
               kind: Role
               metadata:
                 name: keptn-manage-secrets
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-manage-secrets
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               rules:
@@ -1644,12 +1644,12 @@ spec:
               kind: Role
               metadata:
                 name: keptn-get-secrets
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-get-secrets
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               rules:
@@ -1683,12 +1683,12 @@ spec:
               kind: Role
               metadata:
                 name: keptn-manage-roles
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-manage-roles
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               rules:
@@ -1726,12 +1726,12 @@ spec:
               kind: Role
               metadata:
                 name: keptn-manage-rolebindings
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-manage-rolebindings
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               rules:
@@ -1769,12 +1769,12 @@ spec:
               kind: Role
               metadata:
                 name: keptn-read-metadata
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-read-metadata
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               rules:
@@ -1811,12 +1811,12 @@ spec:
               kind: Role
               metadata:
                 name: keptn-manage-configmaps
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-manage-configmaps
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               rules:
@@ -1852,12 +1852,12 @@ spec:
               kind: Role
               metadata:
                 name: keptn-delete-bridge-pod
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-delete-bridge-pod
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               rules:
@@ -1893,12 +1893,12 @@ spec:
               kind: RoleBinding
               metadata:
                 name: keptn-lighthouse-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-lighthouse-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               roleRef:
@@ -1932,12 +1932,12 @@ spec:
               kind: RoleBinding
               metadata:
                 name: keptn-api-service-metadata
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-api-service-metadata
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               roleRef:
@@ -1972,12 +1972,12 @@ spec:
               kind: RoleBinding
               metadata:
                 name: keptn-configuration-service-get-secrets
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-configuration-service-get-secrets
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               roleRef:
@@ -2011,12 +2011,12 @@ spec:
               kind: RoleBinding
               metadata:
                 name: keptn-shipyard-controller-manage-secrets
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-shipyard-controller-manage-secrets
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               roleRef:
@@ -2050,12 +2050,12 @@ spec:
               kind: RoleBinding
               metadata:
                 name: keptn-secret-service-manage-secrets
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-secret-service-manage-secrets
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               roleRef:
@@ -2089,12 +2089,12 @@ spec:
               kind: RoleBinding
               metadata:
                 name: keptn-secret-service-manage-roles
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-secret-service-manage-roles
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               roleRef:
@@ -2128,12 +2128,12 @@ spec:
               kind: RoleBinding
               metadata:
                 name: keptn-secret-service-manage-rolebindings
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: keptn-secret-service-manage-secrets
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               roleRef:
@@ -2167,7 +2167,7 @@ spec:
               kind: Service
               metadata:
                 name: keptn-mongo
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: mongo
                   helm.sh/chart: mongo-10.26.4
@@ -2209,7 +2209,7 @@ spec:
               kind: Service
               metadata:
                 name: keptn-nats-cluster
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app: keptn-nats-cluster
                   chart: nats-0.7.5
@@ -2254,12 +2254,12 @@ spec:
               kind: Service
               metadata:
                 name: api-gateway-nginx
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: api-gateway-nginx
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               spec:
@@ -2296,12 +2296,12 @@ spec:
               kind: Service
               metadata:
                 name: api-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: api-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               spec:
@@ -2343,12 +2343,12 @@ spec:
               kind: Service
               metadata:
                 name: approval-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: approval-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               spec:
@@ -2382,12 +2382,12 @@ spec:
               kind: Service
               metadata:
                 name: bridge
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: bridge
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               spec:
@@ -2428,12 +2428,12 @@ spec:
               kind: Service
               metadata:
                 name: configuration-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: configuration-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               spec:
@@ -2468,12 +2468,12 @@ spec:
               kind: Service
               metadata:
                 name: remediation-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: remediation-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               spec:
@@ -2508,12 +2508,12 @@ spec:
               kind: Service
               metadata:
                 name: mongodb-datastore
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: mongodb-datastore
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               spec:
@@ -2547,12 +2547,12 @@ spec:
               kind: Service
               metadata:
                 name: lighthouse-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: lighthouse-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               spec:
@@ -2586,12 +2586,12 @@ spec:
               kind: Service
               metadata:
                 name: secret-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: secret-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               spec:
@@ -2626,12 +2626,12 @@ spec:
               kind: Service
               metadata:
                 name: shipyard-controller
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: shipyard-controller
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               spec:
@@ -2666,12 +2666,12 @@ spec:
               kind: Service
               metadata:
                 name: statistics-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: statistics-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               spec:
@@ -2706,12 +2706,12 @@ spec:
               kind: Service
               metadata:
                 name: webhook-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: webhook-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   helm.sh/chart: control-plane-0.1.0
               spec:
@@ -2745,7 +2745,7 @@ spec:
               kind: Deployment
               metadata:
                 name: keptn-mongo
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: mongo
                   helm.sh/chart: mongo-10.26.4
@@ -2782,7 +2782,7 @@ spec:
                                   app.kubernetes.io/instance: keptn
                                   app.kubernetes.io/component: mongodb
                               namespaces:
-                                - "krateo-system"
+                                - "krateo-v1"
                               topologyKey: kubernetes.io/hostname
                             weight: 1
                       nodeAffinity:
@@ -2898,12 +2898,12 @@ spec:
               kind: Deployment
               metadata:
                 name: api-gateway-nginx
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: api-gateway-nginx
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   app.kubernetes.io/version: 1.21.6-alpine
                   helm.sh/chart: control-plane-0.1.0
@@ -2919,7 +2919,7 @@ spec:
                       app.kubernetes.io/name: api-gateway-nginx
                       app.kubernetes.io/instance: keptn
                       app.kubernetes.io/managed-by: Helm
-                      app.kubernetes.io/part-of: keptn-krateo-system
+                      app.kubernetes.io/part-of: keptn-krateo-v1
                       app.kubernetes.io/component: control-plane
                       app.kubernetes.io/version: 1.21.6-alpine
                       helm.sh/chart: control-plane-0.1.0
@@ -2998,12 +2998,12 @@ spec:
               kind: Deployment
               metadata:
                 name: api-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: api-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   app.kubernetes.io/version: 0.13.1
                   helm.sh/chart: control-plane-0.1.0
@@ -3019,7 +3019,7 @@ spec:
                       app.kubernetes.io/name: api-service
                       app.kubernetes.io/instance: keptn
                       app.kubernetes.io/managed-by: Helm
-                      app.kubernetes.io/part-of: keptn-krateo-system
+                      app.kubernetes.io/part-of: keptn-krateo-v1
                       app.kubernetes.io/component: control-plane
                       app.kubernetes.io/version: 0.13.1
                       helm.sh/chart: control-plane-0.1.0
@@ -3168,12 +3168,12 @@ spec:
               kind: Deployment
               metadata:
                 name: approval-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: approval-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   app.kubernetes.io/version: 0.13.1
                   helm.sh/chart: control-plane-0.1.0
@@ -3189,7 +3189,7 @@ spec:
                       app.kubernetes.io/name: approval-service
                       app.kubernetes.io/instance: keptn
                       app.kubernetes.io/managed-by: Helm
-                      app.kubernetes.io/part-of: keptn-krateo-system
+                      app.kubernetes.io/part-of: keptn-krateo-v1
                       app.kubernetes.io/component: control-plane
                       app.kubernetes.io/version: 0.13.1
                       helm.sh/chart: control-plane-0.1.0
@@ -3330,12 +3330,12 @@ spec:
               kind: Deployment
               metadata:
                 name: configuration-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: configuration-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   app.kubernetes.io/version: 0.13.1
                   helm.sh/chart: control-plane-0.1.0
@@ -3354,7 +3354,7 @@ spec:
                       app.kubernetes.io/name: configuration-service
                       app.kubernetes.io/instance: keptn
                       app.kubernetes.io/managed-by: Helm
-                      app.kubernetes.io/part-of: keptn-krateo-system
+                      app.kubernetes.io/part-of: keptn-krateo-v1
                       app.kubernetes.io/component: control-plane
                       app.kubernetes.io/version: 0.13.1
                       helm.sh/chart: control-plane-0.1.0
@@ -3444,12 +3444,12 @@ spec:
               kind: Deployment
               metadata:
                 name: remediation-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: remediation-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   app.kubernetes.io/version: 0.13.1
                   helm.sh/chart: control-plane-0.1.0
@@ -3465,7 +3465,7 @@ spec:
                       app.kubernetes.io/name: remediation-service
                       app.kubernetes.io/instance: keptn
                       app.kubernetes.io/managed-by: Helm
-                      app.kubernetes.io/part-of: keptn-krateo-system
+                      app.kubernetes.io/part-of: keptn-krateo-v1
                       app.kubernetes.io/component: control-plane
                       app.kubernetes.io/version: 0.13.1
                       helm.sh/chart: control-plane-0.1.0
@@ -3607,12 +3607,12 @@ spec:
               kind: Deployment
               metadata:
                 name: bridge
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: bridge
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   app.kubernetes.io/version: 0.13.1
                   helm.sh/chart: control-plane-0.1.0
@@ -3628,7 +3628,7 @@ spec:
                       app.kubernetes.io/name: bridge
                       app.kubernetes.io/instance: keptn
                       app.kubernetes.io/managed-by: Helm
-                      app.kubernetes.io/part-of: keptn-krateo-system
+                      app.kubernetes.io/part-of: keptn-krateo-v1
                       app.kubernetes.io/component: control-plane
                       app.kubernetes.io/version: 0.13.1
                       helm.sh/chart: control-plane-0.1.0
@@ -3765,14 +3765,14 @@ spec:
               kind: Deployment
               metadata:
                 name: mongodb-datastore
-                namespace: krateo-system
+                namespace: krateo-v1
                 annotations:
                   fluentbit.io/exclude: "true"
                 labels:
                   app.kubernetes.io/name: mongodb-datastore
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   app.kubernetes.io/version: 0.13.1
                   helm.sh/chart: control-plane-0.1.0
@@ -3788,7 +3788,7 @@ spec:
                       app.kubernetes.io/name: mongodb-datastore
                       app.kubernetes.io/instance: keptn
                       app.kubernetes.io/managed-by: Helm
-                      app.kubernetes.io/part-of: keptn-krateo-system
+                      app.kubernetes.io/part-of: keptn-krateo-v1
                       app.kubernetes.io/component: control-plane
                       app.kubernetes.io/version: 0.13.1
                       helm.sh/chart: control-plane-0.1.0
@@ -3947,12 +3947,12 @@ spec:
               kind: Deployment
               metadata:
                 name: lighthouse-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: lighthouse-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   app.kubernetes.io/version: 0.13.1
                   helm.sh/chart: control-plane-0.1.0
@@ -3968,7 +3968,7 @@ spec:
                       app.kubernetes.io/name: lighthouse-service
                       app.kubernetes.io/instance: keptn
                       app.kubernetes.io/managed-by: Helm
-                      app.kubernetes.io/part-of: keptn-krateo-system
+                      app.kubernetes.io/part-of: keptn-krateo-v1
                       app.kubernetes.io/component: control-plane
                       app.kubernetes.io/version: 0.13.1
                       helm.sh/chart: control-plane-0.1.0
@@ -4117,12 +4117,12 @@ spec:
               kind: Deployment
               metadata:
                 name: secret-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: secret-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   app.kubernetes.io/version: 0.13.1
                   helm.sh/chart: control-plane-0.1.0
@@ -4141,7 +4141,7 @@ spec:
                       app.kubernetes.io/name: secret-service
                       app.kubernetes.io/instance: keptn
                       app.kubernetes.io/managed-by: Helm
-                      app.kubernetes.io/part-of: keptn-krateo-system
+                      app.kubernetes.io/part-of: keptn-krateo-v1
                       app.kubernetes.io/component: control-plane
                       app.kubernetes.io/version: 0.13.1
                       helm.sh/chart: control-plane-0.1.0
@@ -4212,12 +4212,12 @@ spec:
               kind: Deployment
               metadata:
                 name: shipyard-controller
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: shipyard-controller
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   app.kubernetes.io/version: 0.13.1
                   helm.sh/chart: control-plane-0.1.0
@@ -4236,7 +4236,7 @@ spec:
                       app.kubernetes.io/name: shipyard-controller
                       app.kubernetes.io/instance: keptn
                       app.kubernetes.io/managed-by: Helm
-                      app.kubernetes.io/part-of: keptn-krateo-system
+                      app.kubernetes.io/part-of: keptn-krateo-v1
                       app.kubernetes.io/component: control-plane
                       app.kubernetes.io/version: 0.13.1
                       helm.sh/chart: control-plane-0.1.0
@@ -4369,12 +4369,12 @@ spec:
               kind: Deployment
               metadata:
                 name: statistics-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: statistics-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   app.kubernetes.io/version: 0.13.1
                   helm.sh/chart: control-plane-0.1.0
@@ -4393,7 +4393,7 @@ spec:
                       app.kubernetes.io/name: statistics-service
                       app.kubernetes.io/instance: keptn
                       app.kubernetes.io/managed-by: Helm
-                      app.kubernetes.io/part-of: keptn-krateo-system
+                      app.kubernetes.io/part-of: keptn-krateo-v1
                       app.kubernetes.io/component: control-plane
                       app.kubernetes.io/version: 0.13.1
                       helm.sh/chart: control-plane-0.1.0
@@ -4555,12 +4555,12 @@ spec:
               kind: Deployment
               metadata:
                 name: webhook-service
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app.kubernetes.io/name: webhook-service
                   app.kubernetes.io/instance: keptn
                   app.kubernetes.io/managed-by: Helm
-                  app.kubernetes.io/part-of: keptn-krateo-system
+                  app.kubernetes.io/part-of: keptn-krateo-v1
                   app.kubernetes.io/component: control-plane
                   app.kubernetes.io/version: 0.13.1
                   helm.sh/chart: control-plane-0.1.0
@@ -4579,7 +4579,7 @@ spec:
                       app.kubernetes.io/name: webhook-service
                       app.kubernetes.io/instance: keptn
                       app.kubernetes.io/managed-by: Helm
-                      app.kubernetes.io/part-of: keptn-krateo-system
+                      app.kubernetes.io/part-of: keptn-krateo-v1
                       app.kubernetes.io/component: control-plane
                       app.kubernetes.io/version: 0.13.1
                       helm.sh/chart: control-plane-0.1.0
@@ -4722,7 +4722,7 @@ spec:
               kind: StatefulSet
               metadata:
                 name: keptn-nats-cluster
-                namespace: krateo-system
+                namespace: krateo-v1
                 labels:
                   app: keptn-nats-cluster
                   chart: nats-0.7.5
@@ -4890,7 +4890,7 @@ spec:
               kind: Ingress
               metadata:
                 name: api-keptn-ingress
-                namespace: krateo-system
+                namespace: krateo-v1
               spec:
                 rules:
                   - host: keptn.apps.ocp4-lab.kiratech.lan
